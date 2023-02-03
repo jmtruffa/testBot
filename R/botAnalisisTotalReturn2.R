@@ -114,7 +114,7 @@ botAnalisisTotalReturn2 = function() {
 
   bonds = getPPIPriceHistoryMultiple3(PPI$token,
                                       ticker = tickersBond$ticker,
-                                      type = typeBond$type,
+                                      type = tickersBond$type,
                                       from = from,
                                       to = to,
                                       settlement = settlement)
@@ -128,7 +128,7 @@ botAnalisisTotalReturn2 = function() {
 
   cedears = getPPIPriceHistoryMultiple3(PPI$token,
                                         ticker = tickersCedear$ticker,
-                                        type = typeCedear$type,
+                                        type = tickersCedear$type,
                                         from = from,
                                         to = to,
                                         settlement = settlement)
