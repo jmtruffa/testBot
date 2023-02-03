@@ -4,6 +4,7 @@ botAnalisisTotalReturn2 = function() {
   require(methodsPPI)
   require(writexl)
   require(lubridate)
+  require(purrr)
 
 
   PPI = getPPILogin2()
@@ -12,26 +13,37 @@ botAnalisisTotalReturn2 = function() {
   to  = Sys.Date()
   settlement = 'A-48HS'
 
-  tickersStock = c(
-    'ALUA', 'BYMA', 'CEPU', 'LOMA', 'PAMP', 'TGNO4', 'TGSU2', 'TXAR', 'YPFD', 'GGAL', 'BMA', 'SUPV', 'CAPX', 'MIRG'
-  )
-  typeStock = rep('ACCIONES', length(tickersStock))
-
-  tickersBond = c(
-    'GD30', 'GD30D', 'GD30C', 'GD35', 'GD38', 'GD41',
-    'AL30', 'AE38', 'AL29',
-    'TX23', 'T2X3', 'TX24', 'TX26', 'TX28',
-    'TO23', 'TO26', 'TV23', 'TV24', 'BA37D', 'CO26',
-    'DICP', 'CUAP', 'PARP'
-  )
-  typeBond = rep('BONOS', length(tickersBond))
-
-
-  tickersCedear = c(
-    'CAAP', 'GLOB', 'SPY','QQQ', 'VIST', 'MELI'
+  tickers = map_dfr(
+    "totalReturn",
+    sets
   )
 
-  typeCedear = rep('CEDEARS', length(tickersCedear))
+
+  tickersStock = tickers %>% filter(type == "ACCIONES")
+  tickersBond = tickers %>% filter(type == "BONOS")
+  tickersCedear = tickers %>% filter(type == "CEDEARS")
+
+
+  # tickersStock = c(
+  #   'ALUA', 'BYMA', 'CEPU', 'LOMA', 'PAMP', 'TGNO4', 'TGSU2', 'TXAR', 'YPFD', 'GGAL', 'BMA', 'SUPV', 'CAPX', 'MIRG'
+  # )
+  # typeStock = rep('ACCIONES', length(tickersStock))
+  #
+  # tickersBond = c(
+  #   'GD30', 'GD30D', 'GD30C', 'GD35', 'GD38', 'GD41',
+  #   'AL30', 'AE38', 'AL29',
+  #   'TX23', 'T2X3', 'TX24', 'TX26', 'TX28',
+  #   'TO23', 'TO26', 'TV23', 'TV24', 'BA37D', 'CO26',
+  #   'DICP', 'CUAP', 'PARP'
+  # )
+  # typeBond = rep('BONOS', length(tickersBond))
+  #
+  #
+  # tickersCedear = c(
+  #   'CAAP', 'GLOB', 'SPY','QQQ', 'VIST', 'MELI'
+  # )
+  #
+  # typeCedear = rep('CEDEARS', length(tickersCedear))
 
   fails = tibble(
     ticker = character()
@@ -69,10 +81,26 @@ botAnalisisTotalReturn2 = function() {
     select(-openint) %>%
     filter(date >= from)
 
+  ### Para liberar este código, en donde llamaría a todo de una sola vez, debo primero
+  ### interceptar el 2do elemento de la lista que me devuelve getPPIPriceHistoryMultiple3
+  ### ya que ahi están los tickets que fallaron y con pmap_dfr lo estoy perdiendo. Está volviendo
+  ### sólo el elemento 1 que son los precios.
+  # df = pmap_dfr(
+  #   list(
+  #     PPI$token,
+  #     tickers$ticker,
+  #     tickers$type,
+  #     from = from,
+  #     to = to,
+  #     settlement
+  #   ),
+  #   getPPIPriceHistoryMultiple3
+  # )
+
 
   stocks = getPPIPriceHistoryMultiple3(PPI$token,
-                                       ticker = tickersStock,
-                                       type = typeStock,
+                                       ticker = tickersStock$ticker,
+                                       type = tickersStock$type,
                                        from = from,
                                        to = to,
                                        settlement = settlement)
@@ -85,8 +113,8 @@ botAnalisisTotalReturn2 = function() {
 
 
   bonds = getPPIPriceHistoryMultiple3(PPI$token,
-                                      ticker = tickersBond,
-                                      type = typeBond,
+                                      ticker = tickersBond$ticker,
+                                      type = typeBond$type,
                                       from = from,
                                       to = to,
                                       settlement = settlement)
@@ -99,8 +127,8 @@ botAnalisisTotalReturn2 = function() {
   bonds = bonds[[1]]
 
   cedears = getPPIPriceHistoryMultiple3(PPI$token,
-                                        ticker = tickersCedear,
-                                        type = typeCedear,
+                                        ticker = tickersCedear$ticker,
+                                        type = typeCedear$type,
                                         from = from,
                                         to = to,
                                         settlement = settlement)
