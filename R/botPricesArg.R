@@ -1,5 +1,5 @@
-#### DEPRECADA POR botPricesArg()
-botAnalisisTotalReturn2 = function() {
+
+botPricesArg = function() {
   require(tidyverse)
   #require(methodsPPI)
   #require(writexl)
