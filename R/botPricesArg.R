@@ -25,41 +25,6 @@ botPricesArg = function() {
       ticker = character()
     )
 
-    #### AY24 no está en PPI. lo baja de Rava (si no está) y los junta
-    # tickersBonosOld = c('AY24', 'AY24D', 'AY24C', 'T2V2')
-    # fileDirectory = '~/Downloads/temp/'
-    #
-    # ### Chequeo si los archivos están con la data vieja. Sino los bajo
-    # ### Luego esto habrá que ponerlo en la base de datos para hacerlo más rápido
-    # for (i in seq_along(tickersBonosOld)){
-    #   if (!file.exists(paste0(fileDirectory, tickersBonosOld[i], '.csv'))) {
-    #     download.file(paste('http://clasico.rava.com/empresas/precioshistoricos.php?e=',tickersBonosOld[i],'&csv=1', sep=''),
-    #                   paste0(fileDirectory,tickersBonosOld[i], '.csv'), mode = 'wb')
-    #   }
-    # }
-    # bonosOld = tibble(
-    #   ticker = character(),
-    #   fecha = lubridate::Date(),
-    #   apertura = double(),
-    #   maximo = double(),
-    #   minimo = double(),
-    #   cierre =double(),
-    #   volumen = double(),
-    #   openint = double()
-    # )
-    #
-    # for (i in seq_along(tickersBonosOld)){
-    #   temp = read_csv(paste0(fileDirectory, tickersBonosOld[i], '.csv'))
-    #   temp$ticker = tickersBonosOld[i]
-    #   bonosOld = rbind(bonosOld, temp)
-    # }
-    #
-    # bonosOld = bonosOld %>%
-    #   relocate(ticker, date = fecha, price = cierre, volume = volumen, openingPrice = apertura, max = maximo, min = minimo) %>%
-    #   select(-openint) %>%
-    #   filter(date >= from)
-
-
     ### la función getPPIPriceHistoryMultiple3 ya funciona vectorizada
     ### por lo que puedo hacerle una llamada directamente con todos dentro,
     ### y allí hago una pegada por cada una.
@@ -81,7 +46,7 @@ botPricesArg = function() {
     df = df[[1]]
 
     ### en fails me quedan los tickets que fallaron. Los buscaré en la base
-    con = DBI::dbConnect(RSQLite::SQLite(), '/data/historicalData.sqlite3')
+    con = DBI::dbConnect(RSQLite::SQLite(), '~/data/historicalData.sqlite3')
     bonosOld = dplyr::as_tibble(tbl(con, "prices")) %>%
       filter(ticker %in% fails$ticker)
     bonosOld$date = as.Date(as.POSIXct.Date(bonosOld$date, origin = "1970-01-01"))
