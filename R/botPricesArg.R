@@ -46,7 +46,7 @@ botPricesArg = function() {
     df = df[[1]]
 
     ### en fails me quedan los tickets que fallaron. Los buscaré en la base
-    con = DBI::dbConnect(RSQLite::SQLite(), '~/data/historicalData.sqlite3')
+    con = DBI::dbConnect(RSQLite::SQLite(), '/home/juant/data/historicalData.sqlite3')
     bonosOld = dplyr::as_tibble(tbl(con, "prices")) %>%
       filter(ticker %in% fails$ticker)
     bonosOld$date = as.Date(as.POSIXct.Date(bonosOld$date, origin = "1970-01-01"))
