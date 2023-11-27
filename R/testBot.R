@@ -1,7 +1,7 @@
 # Set the library path
-paths=c("/home/juant/R/x86_64-pc-linux-gnu-library/4.2/testBot", "/home/juant/R/x86_64-pc-linux-gnu-library/4.2", "/usr/local/lib/R/site-library","/usr/lib/R/site-library","/usr/lib/R/library")
+#paths=c("/home/juant/R/x86_64-pc-linux-gnu-library/4.2/testBot", "/home/juant/R/x86_64-pc-linux-gnu-library/4.2", "/usr/local/lib/R/site-library","/usr/lib/R/site-library","/usr/lib/R/library")
 
-.libPaths(c(.libPaths(), paths))
+#.libPaths(c(.libPaths(), paths))
 library(telegram.bot)
 library(methodsPPI)
 library(purrr)
@@ -15,10 +15,6 @@ library(RSQLite)
 library(tidyquant)
 library(xtable)
 library(tableHTML)
-
-
-# Load the package
-library(telegram.bot)
 
 tmpGraphPath = '"~/Downloads/temp/"'
 tmp = file.path('~/Downloads/temp/', "test.log")
@@ -161,20 +157,20 @@ updater = updater + CommandHandler("cclComp", CCLComp)
 #     require(jsonlite)
 #     require(httr2)
 #     require(lubridate)
-#     
+#
 #     # print(ticker)
 #     # print(type)
 #     # print(token)
-#     
+#
 #     ##Esto es para probar la funcion de manera directa
 #     # token = PPI$token
 #     # settlement = "INMEDIATA"
 #     # ticker ="S16D2"
 #     # type = "LETRAS"
-#     
+#
 #     url = 'https://clientapi.portfoliopersonal.com/api/1.0/'
 #     urlMarketData = 'MarketData/Book'
-#     
+#
 #     fail = tibble(
 #       ticker = character()
 #     )
@@ -183,7 +179,7 @@ updater = updater + CommandHandler("cclComp", CCLComp)
 #       bids = numeric(),
 #       offers = numeric(),
 #       settlement = character()
-#       
+#
 #     )
 #     error = FALSE
 #     tryCatch(
@@ -197,12 +193,12 @@ updater = updater + CommandHandler("cclComp", CCLComp)
 #           req_method("GET") %>%
 #           req_url_query(Ticker = ticker, Type = type, Settlement = settlement) %>%
 #           req_perform()
-#         
+#
 #         responseBody = fromJSON(rawToChar(rBook$body))
 #       },
 #       error = function(e) { error <<- TRUE; fail <<- fail %>% add_row(ticker = ticker) }
 #     )
-#     
+#
 #     if (!length(responseBody$offers) == 0) {
 #       date = responseBody$date
 #       bids = tibble(cbind(SIDE = rep("BID", length(responseBody$bids$position)),(responseBody$bids)))
@@ -231,18 +227,18 @@ updater = updater + CommandHandler("cclComp", CCLComp)
 #         rbind(bids, offers))
 #     }
 #   }
-#   
+#
 #   dataframe_to_string <- function(df) {
-#     
+#
 #     capture <- capture.output(print(df))
 #     paste(capture, collapse = "\n")
 #   }
-#   
+#
 #   PPI = methodsPPI::getPPILogin2()
-#   
-#   tickers = c("S31O3", "SO3D", 
+#
+#   tickers = c("S31O3", "SO3D",
 #               "S31O3", "SO3C",
-#               "GD30", "GD30D", 
+#               "GD30", "GD30D",
 #               "GD30", "GD30C",
 #               "AL30", "AL30D",
 #               "AL30", "AL30C",
@@ -250,25 +246,25 @@ updater = updater + CommandHandler("cclComp", CCLComp)
 #               "GD30", "GD30C",
 #               "AL30", "AL30D",
 #               "AL30", "AL30C",
-#               "KO", "KOD", 
+#               "KO", "KOD",
 #               "AAPL", "AAPLD",
 #               "SPY", "SPYD",
 #               "MELI", "MELID")
-#   
-#   settle = c(rep("INMEDIATA", 12), 
-#              rep("A-48HS",16)) 
-#   type = c(rep("LETRAS",4), 
+#
+#   settle = c(rep("INMEDIATA", 12),
+#              rep("A-48HS",16))
+#   type = c(rep("LETRAS",4),
 #            rep("BONOS",16),
 #            rep("CEDEARS", 8))
-#   
+#
 #   prices = pmap_dfr(list(
 #     PPI$token,
 #     ticker = tickers,
 #     type = type,
 #     settlement = settle),
-#     getPPIPuntas) 
-#   
-#   
+#     getPPIPuntas)
+#
+#
 #   out = tibble(
 #     date = Date(),
 #     ticker = character(),
@@ -280,42 +276,42 @@ updater = updater + CommandHandler("cclComp", CCLComp)
 #     compra = double(),
 #     venta = double()
 #   )
-#   
+#
 #   for (i in seq(1, length(tickers), 2)) {
-#     
-#     temp = prices %>% 
+#
+#     temp = prices %>%
 #       filter(ticker == tickers[i] | ticker == tickers[i+1],
-#              settlement == settle[i] | settlement == settle[i+1]) %>% 
-#       group_by(ticker, SIDE) %>% 
-#       do(head(., n=1)) %>% 
-#       pivot_wider(names_from = SIDE, values_from = price) %>% 
-#       pivot_wider(names_from = ticker, values_from = c("BID", "OFFER")) %>% 
+#              settlement == settle[i] | settlement == settle[i+1]) %>%
+#       group_by(ticker, SIDE) %>%
+#       do(head(., n=1)) %>%
+#       pivot_wider(names_from = SIDE, values_from = price) %>%
+#       pivot_wider(names_from = ticker, values_from = c("BID", "OFFER")) %>%
 #       fill(starts_with(c("BID", "OFFER")), .direction = "down") %>%
-#       fill(starts_with(c("BID", "OFFER")), .direction = "up") %>% 
-#       head(n= 1) %>% 
+#       fill(starts_with(c("BID", "OFFER")), .direction = "up") %>%
+#       head(n= 1) %>%
 #       mutate(
 #         compra = round(1 / (.[[8]] / .[[5]]), 2),
 #         venta = round(.[[7]] / .[[6]],2)
-#       ) %>% 
+#       ) %>%
 #       select(c(1,2,5:10)) %>%
-#       mutate(ticker = paste0(tickers[i], "-", tickers[i+1])) %>% 
+#       mutate(ticker = paste0(tickers[i], "-", tickers[i+1])) %>%
 #       relocate(ticker, .before = settlement)
 #     colnames(temp) = colnames(out)
 #     out = add_row(out, temp)
-#     
+#
 #   }
 #   out = out %>% relocate(date, ticker, settlement, compra, venta) %>% as.data.frame()
 #   textOut = dataframe_to_string(out)
-#   
+#
 #   bot$sendMessage(chat_id = update$message$chat_id,
 #                   text =  textOut)
 #   out = update$effective_user()
 #   out$call = "Dolar"
 #   log_print(out)
-#   
-# 
+#
+#
 # }
-# 
+#
 # update = updater + CommandHandler("TC", TC)
 
 dolar = function(bot, update){
@@ -352,10 +348,10 @@ test = function(bot, update){
     require(jsonlite)
     require(httr2)
     require(lubridate)
-    
+
     url = 'https://clientapi.portfoliopersonal.com/api/1.0/'
     urlMarketData = 'MarketData/Book'
-    
+
     fail = tibble(
       ticker = character()
     )
@@ -364,7 +360,7 @@ test = function(bot, update){
       bids = numeric(),
       offers = numeric(),
       settlement = character()
-      
+
     )
     error = FALSE
     tryCatch(
@@ -378,12 +374,12 @@ test = function(bot, update){
           req_method("GET") %>%
           req_url_query(Ticker = ticker, Type = type, Settlement = settlement) %>%
           req_perform()
-        
+
         responseBody = fromJSON(rawToChar(rBook$body))
       },
       error = function(e) { error <<- TRUE; fail <<- fail %>% add_row(ticker = ticker) }
     )
-    
+
     if (!length(responseBody$offers) == 0) {
       date = responseBody$date
       bids = tibble(cbind(SIDE = rep("BID", length(responseBody$bids$position)),(responseBody$bids)))
@@ -415,14 +411,14 @@ test = function(bot, update){
   tickers = c("GD30D", "AL30D", "GD38D", "AE38D")
   type = "BONOS"
   settlement = c("INMEDIATA", "A-48HS")
-  
+
   activos = as_tibble(
     expand.grid(tickers = tickers,
                 settlement = settlement,
                 type = type)
   )
-  
-  
+
+
   PPI = getPPILogin2()
   df = pmap_dfr(
     list(
@@ -432,26 +428,26 @@ test = function(bot, update){
       activos$settlement
     ),
     getTasa #getPPIBook2
-  ) %>% 
-    group_by(ticker, SIDE, settlement) %>% 
-    do(head(., n=1)) %>% 
-    as.data.frame() %>% 
-    filter( (SIDE ==  "OFFER" & settlement == "INMEDIATA") | (SIDE == "BID" & settlement == "A-48HS")) %>% 
+  ) %>%
+    group_by(ticker, SIDE, settlement) %>%
+    do(head(., n=1)) %>%
+    as.data.frame() %>%
+    filter( (SIDE ==  "OFFER" & settlement == "INMEDIATA") | (SIDE == "BID" & settlement == "A-48HS")) %>%
     pivot_wider(names_from = c(SIDE, settlement),
-                values_from = price)  %>% 
-    relocate(date, ticker, position, quantity, OFFER_INMEDIATA, `BID_A-48HS`) %>% 
+                values_from = price)  %>%
+    relocate(date, ticker, position, quantity, OFFER_INMEDIATA, `BID_A-48HS`) %>%
     mutate(
-      tasa =  `BID_A-48HS` / lead(OFFER_INMEDIATA) - 1 
+      tasa =  `BID_A-48HS` / lead(OFFER_INMEDIATA) - 1
     )
-  
+
   #textOut = (toString(df))
   print(df)
   bot$sendMessage(chat_id = update$message$chat_id,
                   #text = print(xtable::xtable(df, digits = 6, caption = "Tasa entre Px", type = "html"), type = "html"),
                   text =  knitr::kable(df, format = 'latex'),
                   parse_mode = 'HTML')
-  
-  
+
+
 }
 
 updater = updater + CommandHandler("test", test)
