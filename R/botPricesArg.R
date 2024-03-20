@@ -43,7 +43,7 @@ botPricesArg = function() {
       fails = rbind(fails, df[[2]])
 
     }
-    df = df[[1]]
+    df = df[[1]] %>% select(-previousClose, -marketChange, -marketChangePercent)
 
     ### en fails me quedan los tickets que fallaron. Los buscaré en la base
     con = DBI::dbConnect(RSQLite::SQLite(), '/home/juant/data/historicalData.sqlite3')
